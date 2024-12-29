@@ -1,0 +1,47 @@
+﻿@model IEnumerable<PruebaTecnicaOscarCastro.Models.Sala>
+
+<div class="container">
+    <h2>Gestión de Salas</h2>
+    <a href="@Url.Action("Crear")" class="btn btn-primary mb-3">Nueva Sala</a>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Capacidad</th>
+                <th>Disponibilidad</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sala in Model) {
+                <tr>
+                    <td>@sala.Nombre</td>
+                    <td>@sala.Capacidad</td>
+                    <td>@(sala.Disponibilidad ? "Disponible" : "No Disponible")</td>
+                    <td>
+                        <a href="@Url.Action("Editar", new { id = sala.ID })" class="btn btn-sm btn-warning">Editar</a>
+                        <button onclick="eliminarSala(@sala.ID)" class="btn btn-sm btn-danger">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        function eliminarSala(id) {
+            if (confirm('¿Está seguro de que desea eliminar esta sala?')) {
+                $.post('@Url.Action("Eliminar")', { id: id })
+                    .done(function () {
+                        window.location.reload();
+                    })
+                    .fail(function () {
+                        alert('Error al eliminar la sala');
+                    });
+            }
+        }
+    </script>
+}
+

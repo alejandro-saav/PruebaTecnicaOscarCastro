@@ -1,0 +1,75 @@
+@model IEnumerable<PruebaTecnicaOscarCastro.Models.Reserva>
+
+<div class="container">
+    <h2>Gestión de Reservas</h2>
+
+    <div class="row mb-3">
+        <div class="col">
+            <a href="@Url.Action("Crear")" class="btn btn-primary">Nueva Reserva</a>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Filtros de búsqueda</h5>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Fecha Inicio</label>
+                        <input type="date" id="fechaInicio" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Fecha Fin</label>
+                        <input type="date" id="fechaFin" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Sala</label>
+                        @if (ViewBag.Salas != null) {
+                            @Html.DropDownList("SalaID", ViewBag.Salas as SelectList, "Todas las salas", new { @class = "form-control" })
+                        }
+                        else {
+                            <p>No hay salas disponibles.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+            <button onclick="buscarReservas()" class="btn btn-primary mt-3">Buscar</button>
+        </div>
+    </div>
+
+    <div id="listaReservas">
+        @Html.Partial("_ListarReservas", Model)
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function buscarReservas() {
+            var fechaInicio = $('#fechaInicio').val();
+            var fechaFin = $('#fechaFin').val();
+            var salaId = $('#SalaID').val();
+
+            $.get('@Url.Action("Consultar")', {
+                fechaInicio: fechaInicio,
+                fechaFin: fechaFin,
+                salaId: salaId
+            })
+            .done(function (result) {
+                $('#listaReservas').html(result);
+            });
+        }
+
+        function eliminarReserva(id) {
+            if (confirm('¿Está seguro de que desea eliminar esta reserva?')) {
+                $.post('@Url.Action("Eliminar")', { id: id })
+                    .done(function () {
+                        buscarReservas();
+                    });
+            }
+        }
+    </script>
+}

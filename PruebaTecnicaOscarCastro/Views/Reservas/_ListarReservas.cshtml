@@ -1,0 +1,25 @@
+@model IEnumerable<PruebaTecnicaOscarCastro.Models.Reserva>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Sala</th>
+            <th>Fecha</th>
+            <th>Usuario</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var reserva in Model) {
+            <tr>
+                <td>@reserva.Sala.Nombre</td>
+                <td>@reserva.FechaReserva.ToString("dd/MM/yyyy")</td>
+                <td>@reserva.Usuario</td>
+                <td>
+                    <a href="@Url.Action("Editar", new { id = reserva.ID })" class="btn btn-sm btn-warning">Editar</a>
+                    <button onclick="eliminarReserva(@reserva.ID)" class="btn btn-sm btn-danger">Eliminar</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

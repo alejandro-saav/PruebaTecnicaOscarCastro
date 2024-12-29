@@ -1,0 +1,45 @@
+@model PruebaTecnicaOscarCastro.Models.Sala
+
+@{
+    ViewBag.Title = "Editar Sala";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h4>Editar Sala</h4>
+                </div>
+                <div class="card-body">
+                    @using (Html.BeginForm("Editar", "Salas", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" })) {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.ID)
+
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.Nombre, "Nombre de la Sala", new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control", required = "required" })
+                            @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.Capacidad, "Capacidad", new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Capacidad, new { @class = "form-control", type = "number", min = "1", required = "required" })
+                            @Html.ValidationMessageFor(m => m.Capacidad, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            @Html.CheckBoxFor(m => m.Disponibilidad, new { @class = "form-check-input" })
+                            @Html.LabelFor(m => m.Disponibilidad, "Disponible", new { @class = "form-check-label" })
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            @Html.ActionLink("Volver", "Index", null, new { @class = "btn btn-secondary" })
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
