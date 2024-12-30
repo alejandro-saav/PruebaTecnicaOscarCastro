@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
-using System.Web.Mvc;
-using System;
+﻿using PruebaTecnicaOscarCastro.Models;
 using PruebaTecnicaOscarCastro.Repositorios.Interfaces;
-using PruebaTecnicaOscarCastro.Models;
+using System;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 
 public class ReservasController : Controller {
     private readonly IReservaRepository _reservaRepository;
@@ -16,6 +16,8 @@ public class ReservasController : Controller {
 
     public async Task<ActionResult> Index() {
         var reservas = await _reservaRepository.ConsultarReservas(null, null, null);
+        var salas = await _salaRepository.ObtenerTodas();
+        ViewBag.Salas = new SelectList(salas, "ID", "Nombre");
         return View(reservas);
     }
 
@@ -34,7 +36,7 @@ public class ReservasController : Controller {
                 ModelState.AddModelError("", "La sala no está disponible para la fecha seleccionada");
                 var salas = await _salaRepository.ObtenerTodas();
                 ViewBag.Salas = new SelectList(salas, "ID", "Nombre");
-                return View(reserva);
+                return View();
             }
 
             await _reservaRepository.Insertar(reserva);
@@ -80,6 +82,6 @@ public class ReservasController : Controller {
     [HttpGet]
     public async Task<ActionResult> Consultar(DateTime? fechaInicio, DateTime? fechaFin, int? salaId) {
         var reservas = await _reservaRepository.ConsultarReservas(fechaInicio, fechaFin, salaId);
-        return PartialView("_ListaReservas", reservas);
+        return PartialView("_ListarReservas", reservas);
     }
 }

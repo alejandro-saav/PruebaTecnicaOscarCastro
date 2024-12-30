@@ -1,14 +1,12 @@
-﻿using PruebaTecnicaOscarCastro.Models;
+﻿using Dapper;
+using PruebaTecnicaOscarCastro.Models;
 using PruebaTecnicaOscarCastro.Repositorios.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SqlClient;
 using System.Data;
-using System.Linq;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
-using System.Web;
-using Dapper;
 
 namespace PruebaTecnicaOscarCastro.Repositorios {
     public class ReservaRepository : IReservaRepository {
@@ -39,12 +37,14 @@ namespace PruebaTecnicaOscarCastro.Repositorios {
             var parameters = new DynamicParameters();
             parameters.Add("@SalaID", salaId);
             parameters.Add("@FechaReserva", fechaReserva);
+            parameters.Add("@Result", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
 
-            var result = await _db.ExecuteScalarAsync<int>(
+            await _db.ExecuteAsync(
                 "sp_ValidarDisponibilidadSala",
                 parameters,
                 commandType: CommandType.StoredProcedure);
 
+            var result = parameters.Get<int>("@Result");
             return result == 0;
         }
 

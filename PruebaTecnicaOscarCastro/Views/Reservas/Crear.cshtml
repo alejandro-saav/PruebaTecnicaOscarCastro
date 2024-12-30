@@ -34,7 +34,7 @@
                         </div>
 
                         <div id="mensajeDisponibilidad" class="alert alert-warning d-none">
-                            La sala no está disponible para la fecha seleccionada
+                            La sala no está disponible para la fecha seleccionada, por favor seleccione una fecha diferente.
                         </div>
 
                         <div class="d-grid gap-2">
@@ -59,11 +59,15 @@
                     $.post('@Url.Action("ValidarDisponibilidad")', { salaId: salaId, fecha: fecha })
                         .done(function (response) {
                             if (!response.disponible) {
+                                $('#FechaReserva').addClass('is-invalid');
                                 $('#mensajeDisponibilidad').removeClass('d-none');
-                                $('button[type="submit"]').prop('disabled', true);
+                                return false;
+                                //$('button[type="submit"]').prop('disabled', true);
                             } else {
                                 $('#mensajeDisponibilidad').addClass('d-none');
-                                $('button[type="submit"]').prop('disabled', false);
+                                $('#FechaReserva').removeClass('is-invalid');
+                                return true;
+                                //$('button[type="submit"]').prop('disabled', false);
                             }
                         });
                 }
@@ -72,11 +76,12 @@
             $('#SalaID, #FechaReserva').change(validarDisponibilidad);
 
             $('form').on('submit', function (e) {
+                console.log(this.checkValidity);
                 if (!this.checkValidity()) {
                     e.preventDefault();
                     e.stopPropagation();
+                    $(this).addClass('was-validated');
                 }
-                $(this).addClass('was-validated');
             });
         });
     </script>
